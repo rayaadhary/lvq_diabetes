@@ -124,16 +124,16 @@
 		$sum2 = 0;
 
 		for ($a = 0; $a < 10; $a++) { // Menggunakan hanya 10 data
-			$data[0] = "Hidari-2 | T:(1)";
-			$data[1] = "Migi-1 | T:(0)";
-			$data[2] = "Hito-1 | T:(1)";
-			$data[3] = "Moku-1 | T:(0)";
-			$data[4] = "Ryoku-1 | T:(1)";
-			$data[5] = "Hidari-3 | T:(0)";
-			$data[6] = "Migi-3 | T:(1)";
-			$data[7] = "Hito-2 | T:(0)";
-			$data[8] = "Moku-2 | T:(1)";
-			$data[9] = "Ryoku-2 | T:(1)";
+			$data[0] = "Outcome(1)";
+			$data[1] = "Outcome(0)";
+			$data[2] = "Outcome(1)";
+			$data[3] = "Outcome(0)";
+			$data[4] = "Outcome(1)";
+			$data[5] = "Outcome(0)";
+			$data[6] = "Outcome(1)";
+			$data[7] = "Outcome(0)";
+			$data[8] = "Outcome(1)";
+			$data[9] = "Outcome(1)";
 
 			$sum = array(0, 0, 0, 0, 0, 0, 0, 0);
 			$baris1 = 1;

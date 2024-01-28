@@ -99,7 +99,7 @@ $baris = 1;
         <?php foreach ($row as $value) { ?>
           <td><?php echo number_format($value, 2); ?></td>
         <?php } ?>
-        <td><?= $labels[$index] ?></td>
+        <td><?= $labels[$index + 1] ?></td>
       </tr>
     <?php } ?>
   </table>

@@ -54,4 +54,4 @@ for ($i = 0; $i < count($originalData[0]); $i++) {
   }
 }
 
-$initialWeights = array_slice($normalizedData, 0, 2);
+$initialWeights = array_slice($normalizedData, 1, 2);

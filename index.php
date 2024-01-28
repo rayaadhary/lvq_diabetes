@@ -111,7 +111,7 @@ $baris = 1;
       <div style="display:flex; flex-direction: column; gap: 1px;">
         <input name="iterasi" type="text" value="" size="50" placeholder="epoch" /><br>
         <input name="alpha" type="text" value="" size="50" placeholder="learning rate" /><br>
-        <input name="beta" type="text" value="" size="50" placeholder="beta value" /><br>
+        <input name="beta" type="text" value="" size="50" placeholder="fungsi pembelajaran" /><br>
         <div style="display:flex; justify-content: center;"><input type="submit" name="sbmt" value="Proses" /></div>
       </div>
   </div>

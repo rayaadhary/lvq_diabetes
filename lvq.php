@@ -118,59 +118,81 @@
 			} // End epoc
 			//echo "<br>=========================================================================================================================================================================================================================================================================================================";
 		} //end isset
-
 		// Hasil pengenalan
 		$sum1 = 0;
 		$sum2 = 0;
+		?>
+		<table border="1">
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>Data</th>
+					<th>Bobot 0</th>
+					<th>Bobot 1</th>
+					<th>Minimum</th>
+					<th>Cluster</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				for ($a = 0; $a < 10; $a++) { // Menggunakan hanya 10 data
+					$data[0] = "Outcome(1)";
+					$data[1] = "Outcome(0)";
+					$data[2] = "Outcome(1)";
+					$data[3] = "Outcome(0)";
+					$data[4] = "Outcome(1)";
+					$data[5] = "Outcome(0)";
+					$data[6] = "Outcome(1)";
+					$data[7] = "Outcome(0)";
+					$data[8] = "Outcome(1)";
+					$data[9] = "Outcome(1)";
 
-		for ($a = 0; $a < 10; $a++) { // Menggunakan hanya 10 data
-			$data[0] = "Outcome(1)";
-			$data[1] = "Outcome(0)";
-			$data[2] = "Outcome(1)";
-			$data[3] = "Outcome(0)";
-			$data[4] = "Outcome(1)";
-			$data[5] = "Outcome(0)";
-			$data[6] = "Outcome(1)";
-			$data[7] = "Outcome(0)";
-			$data[8] = "Outcome(1)";
-			$data[9] = "Outcome(1)";
+					$sum = array(0, 0, 0, 0, 0, 0, 0, 0);
+					$baris1 = 1;
 
-			$sum = array(0, 0, 0, 0, 0, 0, 0, 0);
-			$baris1 = 1;
+					for ($x = 0; $x < 2; $x++) { // Baris bobot
+						for ($y = 0; $y < 8; $y++) { // Kolom huruf & bobot (sesuai dengan jumlah fitur setelah normalisasi)
+							$pangkat[$x][$y] = ($normalizedData[$a][$y] - $initialWeights[$x][$y]) * ($normalizedData[$a][$y] - $initialWeights[$x][$y]);
+						}
 
-			for ($x = 0; $x < 2; $x++) { // Baris bobot
-				for ($y = 0; $y < 8; $y++) { // Kolom huruf & bobot (sesuai dengan jumlah fitur setelah normalisasi)
-					$pangkat[$x][$y] = ($normalizedData[$a][$y] - $initialWeights[$x][$y]) * ($normalizedData[$a][$y] - $initialWeights[$x][$y]);
+						for ($y = 0; $y < 8; $y++) {
+							$sum[$x] = $sum[$x] + $pangkat[$x][$y];
+						}
+
+						$sqrt[$x] = sqrt($sum[$x]); // Nilai d (jarak)
+					}
+				?>
+					<tr align="center">
+						<td><?= $a + 1 ?></td>
+						<td>
+							<?php
+							$formattedValues = array_map(function ($value) {
+								return number_format($value, 2);
+							}, $normalizedData[$a]);
+							echo implode(', ', $formattedValues);
+							?>
+						</td>
+						<td><?= number_format($sqrt[0], 2)  ?></td>
+						<td><?= number_format($sqrt[1], 2) ?></td>
+						<td><?= number_format(min($sqrt), 2) ?></td>
+						<td><?= array_search(min($sqrt), $sqrt) ?></td>
+					</tr>
+				<?php
+					if (array_search(min($sqrt), $sqrt) == 0) {
+						$sum1++;
+					} else {
+						$sum2++;
+					}
 				}
-
-				for ($y = 0; $y < 8; $y++) {
-					$sum[$x] = $sum[$x] + $pangkat[$x][$y];
-				}
-
-				$sqrt[$x] = sqrt($sum[$x]); // Nilai d (jarak)
-			}
-
-			$minimal = min($sqrt[0], $sqrt[1]);
-			echo "<br>";
-
-			for ($y = 0; $y < 2; $y++) {
-				if ($minimal == $sqrt[$y]) {
-					$cluster = $y;
-				}
-			}
-
-			echo "Data $data[$a] masuk dalam Kelas $cluster</br>";
-
-			if ($cluster == 0) {
-				$sum1++;
-			} else {
-				$sum2++;
-			}
-		}
-
+				?>
+			</tbody>
+		</table>
+		<?php
+		echo "<br>";
 		echo "Cluster 0 sebanyak: $sum1 <br />";
 		echo "Cluster 1 sebanyak: $sum2";
 		?>
+
 
 	</center>
 </body>

@@ -42,7 +42,7 @@ $baris = 1;
 <body>
   <h1>Klasifikasi Diabetes dengan LVQ</h1>
 
-  <h2>Data Asli</h2>
+  <h2>Data Set</h2>
   <table>
     <tr>
       <th>No</th>
@@ -100,6 +100,47 @@ $baris = 1;
           <td><?php echo number_format($value, 2); ?></td>
         <?php } ?>
         <td><?= $labels[$index + 1] ?></td>
+      </tr>
+    <?php } ?>
+  </table>
+
+  <h2>Data Uji</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <?php foreach ($header as $colName) { ?>
+        <th><?= $colName ?></th>
+      <?php } ?>
+    </tr>
+
+    <?php foreach ($originalDataTes as $index => $row) { ?>
+      <tr>
+        <td><?php echo $index + 1 ?></td>
+        <?php foreach ($row as $value) { ?>
+          <td><?php echo $value ?></td>
+        <?php } ?>
+        <td><?= $labelsTes[$index] ?></td>
+      </tr>
+    <?php } ?>
+  </table>
+
+  <h2>Normalisasi Data Uji</h2>
+  <table>
+    <tr>
+      <th>No</th>
+      <?php for ($z = 0; $z < 8; $z++) { ?>
+        <th>X<?php echo $z + 1 ?></th>
+      <?php } ?>
+      <th>Outcome</th>
+    </tr>
+
+    <?php foreach ($normalizedDataTes as $index => $row) { ?>
+      <tr>
+        <td><?php echo $index + 1; ?></td>
+        <?php foreach ($row as $value) { ?>
+          <td><?php echo number_format($value, 2); ?></td>
+        <?php } ?>
+        <td><?= $labelsTes[$index] ?></td>
       </tr>
     <?php } ?>
   </table>

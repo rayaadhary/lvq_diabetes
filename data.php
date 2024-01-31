@@ -20,6 +20,19 @@ while (($row = fgetcsv($csvFile)) !== false) {
 // Tutup file CSV
 fclose($csvFile);
 
+$csvFileTest = fopen('data_tes.csv', 'r');
+$originalDataTes = array();
+$labelsTes = array();
+
+while (($row = fgetcsv($csvFileTest)) !== false) {
+  // Ambil kolom yang diinginkan untuk data
+  $originalDataTes[] = array_slice($row, 0, 8);
+  $labelsTes[] = $row[8];
+}
+
+fclose($csvFileTest);
+
+
 // Fungsi untuk menghitung mean dari sebuah array
 function calculateMean($array)
 {
@@ -39,7 +52,9 @@ function calculateStdDev($array)
   return sqrt($sumSquaredDiff / count($array));
 }
 
-// Normalisasi data
+
+
+// Normalisasi data set
 for ($i = 0; $i < count($originalData[0]); $i++) {
   // Ambil kolom ke-i
   $column = array_column($originalData, $i);
@@ -51,6 +66,21 @@ for ($i = 0; $i < count($originalData[0]); $i++) {
   // Normalisasi data
   for ($j = 0; $j < count($originalData); $j++) {
     $normalizedData[$j][$i] = ($originalData[$j][$i] - $mean) / $stdDev;
+  }
+}
+
+// Normalisasi data tes
+for ($i = 0; $i < count($originalDataTes[0]); $i++) {
+  // Ambil kolom ke-i
+  $column = array_column($originalDataTes, $i);
+
+  // Hitung mean dan standar deviasi
+  $mean = calculateMean($column);
+  $stdDev = calculateStdDev($column);
+
+  // Normalisasi data
+  for ($j = 0; $j < count($originalDataTes); $j++) {
+    $normalizedDataTes[$j][$i] = ($originalDataTes[$j][$i] - $mean) / $stdDev;
   }
 }
 

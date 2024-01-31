@@ -48,29 +48,27 @@
 					}
 
 					// Cari jarak minimal
+					// Cari jarak minimal
 					$minimal = min($sqrt[0], $sqrt[1]);
 
 					// Looping untuk pembaruan bobot
 					for ($x = 0; $x < count($initialWeights); $x++) {
-						// Jika jarak bukan minimal
-						if ($sqrt[$x] != $minimal) {
-							// Bobot tetap
-							$initialWeights[$x] = $initialWeights[$x];
-						} else { // Jika jarak = minimal
-							// Looping untuk kolom huruf & bobot
+						// Jika jarak = minimal
+						if ($sqrt[$x] == $minimal) {
+							// Pembaruan bobot hanya pada bobot pemenang
 							for ($y = 0; $y < count($normalizedData[$a]); $y++) {
 								// Jika target = kelas
 								if ($initialWeights[$x][count($initialWeights[$x]) - 1] == $labels[$a]) {
 									$updateWeight = $initialWeights[$x][$y] + ($alpha * ($normalizedData[$a][$y] - $initialWeights[$x][$y]));
 									$initialWeights[$x][$y] = $updateWeight;
-								} else {
-									// Jika target tidak sama dengan kelas
-									$updateWeight = $initialWeights[$x][$y] - ($alpha * ($normalizedData[$a][$y] - $initialWeights[$x][$y]));
-									$initialWeights[$x][$y] = $updateWeight;
+									// echo "Updated weight: " . $updateWeight . "\n"; // Pesan debugging
 								}
 							}
+							break; // Keluar dari loop setelah pembaruan pertama
 						}
 					}
+
+
 
 					// Menampilkan hasil seperti yang diinginkan
 					$e = $i + 1;
@@ -112,14 +110,15 @@
 				} // End looping per data
 
 				// Update alpha
-				// $alpha = $alpha * exp(-$beta * ($i + 1));
-				$alpha = $alpha - $alpha * ($beta * ($i + 1));
+				$alpha = $alpha * exp(-$beta * ($i + 1));
+				// $alpha = $alpha - $alpha * (-$beta * ($i + 1));
 				echo "Alpha baru: $alpha";
 				echo "<br>=========================================================================================================================================================================================================================================================================================================";
 			} // End epoc
 			//echo "<br>=========================================================================================================================================================================================================================================================================================================";
 		} //end isset
 		// Hasil pengenalan
+
 		$sum1 = 0;
 		$sum2 = 0;
 		?>
@@ -131,37 +130,37 @@
 					<th>Bobot 0</th>
 					<th>Bobot 1</th>
 					<th>Minimum</th>
-					<th>Cluster</th>
+					<th>Outcome</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
-				for ($a = 0; $a < 10; $a++) { // Menggunakan hanya 10 data
-					$data[0] = "Outcome(1)";
-					$data[1] = "Outcome(0)";
-					$data[2] = "Outcome(1)";
-					$data[3] = "Outcome(0)";
-					$data[4] = "Outcome(1)";
-					$data[5] = "Outcome(0)";
-					$data[6] = "Outcome(1)";
-					$data[7] = "Outcome(0)";
-					$data[8] = "Outcome(1)";
-					$data[9] = "Outcome(1)";
-
-					$sum = array(0, 0, 0, 0, 0, 0, 0, 0);
+				for ($a = 0; $a < count($normalizedDataTes); $a++) {
+					$sum = array_fill(0, count($initialWeights), 0); // Reset variabel sum
 					$baris1 = 1;
 
-					for ($x = 0; $x < 2; $x++) { // Baris bobot
-						for ($y = 0; $y < 8; $y++) { // Kolom huruf & bobot (sesuai dengan jumlah fitur setelah normalisasi)
-							$pangkat[$x][$y] = ($normalizedData[$a][$y] - $initialWeights[$x][$y]) * ($normalizedData[$a][$y] - $initialWeights[$x][$y]);
+					for ($x = 0; $x < count($initialWeights); $x++) {
+						for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
+							$pangkat[$x][$y] = ($normalizedDataTes[$a][$y] - $initialWeights[$x][$y]) * ($normalizedDataTes[$a][$y] - $initialWeights[$x][$y]);
 						}
 
-						for ($y = 0; $y < 8; $y++) {
-							$sum[$x] = $sum[$x] + $pangkat[$x][$y];
+						for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
+							$sum[$x] += $pangkat[$x][$y]; // Perbaiki penjumlahan nilai sum
 						}
 
-						$sqrt[$x] = sqrt($sum[$x]); // Nilai d (jarak)
+						$sqrt[$x] = sqrt($sum[$x]);
+
+						// Pencetakan nilai untuk debugging
 					}
+
+					// Pembaruan bobot dilakukan setelah perhitungan Euclidean Distance
+					$idxMin = array_search(min($sqrt), $sqrt);
+					for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
+						$updateWeight = $initialWeights[$idxMin][$y] + ($alpha * ($normalizedDataTes[$a][$y] - $initialWeights[$idxMin][$y]));
+						$initialWeights[$idxMin][$y] = $updateWeight;
+					}
+
+					// Tampilkan hasil pada baris tabel
 				?>
 					<tr align="center">
 						<td><?= $a + 1 ?></td>
@@ -169,32 +168,23 @@
 							<?php
 							$formattedValues = array_map(function ($value) {
 								return number_format($value, 2);
-							}, $normalizedData[$a]);
+							}, $normalizedDataTes[$a]);
 							echo implode(', ', $formattedValues);
 							?>
 						</td>
-						<td><?= number_format($sqrt[0], 2)  ?></td>
+						<td><?= number_format($sqrt[0], 2) ?></td>
 						<td><?= number_format($sqrt[1], 2) ?></td>
 						<td><?= number_format(min($sqrt), 2) ?></td>
-						<td><?= array_search(min($sqrt), $sqrt) ?></td>
+						<td><?= $idxMin ?></td>
 					</tr>
 				<?php
-					if (array_search(min($sqrt), $sqrt) == 0) {
-						$sum1++;
-					} else {
-						$sum2++;
-					}
 				}
+
+
+				// }
 				?>
 			</tbody>
 		</table>
-		<?php
-		echo "<br>";
-		echo "Cluster 0 sebanyak: $sum1 <br />";
-		echo "Cluster 1 sebanyak: $sum2";
-		?>
-
-
 	</center>
 </body>
 

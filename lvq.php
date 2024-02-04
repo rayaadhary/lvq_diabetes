@@ -8,13 +8,27 @@
 		border-collapse: collapse;
 		border-spacing: 0;
 	}
+
+	a {
+		text-decoration: none;
+		color: #000;
+	}
 </style>
 
 <body style="font-family:verdana;font-size:75%">
+	<!-- Sidebar -->
+	<div style="height: 30%; width: 150px; position: fixed; background-color: #f2f2f2; padding: 20px; left: 0; top: 50%; transform: translateY(-50%); border-radius: 5%;">
+		<h3>&#9776; Menu</h3>
+		<ul style="list-style-type: disc; padding: 0;">
+			<li><a href="#hasil-klasifikasi">Hasil Klasifikasi</a></li>
+			<li><a href="#hasil-uji">Hasil Uji</a></li>
+		</ul>
+	</div>
+
 	<center>
-		<h1>Hasil Klasifikasi Diabetes dengan LVQ</h1>
-	</center>
-	<center>
+		<section id="hasil-klasifikasi">
+			<h1>Hasil Klasifikasi Diabetes dengan LVQ</h1>
+		</section>
 
 		<?php
 		include_once "data.php";
@@ -68,8 +82,6 @@
 						}
 					}
 
-
-
 					// Menampilkan hasil seperti yang diinginkan
 					$e = $i + 1;
 					echo "</br><h2><b>Epoch ke $e</b></h2>"; ?>
@@ -105,86 +117,85 @@
 					</table>
 		<?php
 					echo "<br>";
-					echo "<br>";
-					echo "<br>";
 				} // End looping per data
 
 				// Update alpha
 				$alpha = $alpha * exp(-$beta * ($i + 1));
 				// $alpha = $alpha - $alpha * (-$beta * ($i + 1));
 				echo "Alpha baru: $alpha";
-				echo "<br>=========================================================================================================================================================================================================================================================================================================";
-			} // End epoc
-			//echo "<br>=========================================================================================================================================================================================================================================================================================================";
+				echo "<hr>";
+				echo "<br>";
+			} // End epoch			
 		} //end isset
 		// Hasil pengenalan
 
 		$sum1 = 0;
 		$sum2 = 0;
 		?>
-		<table border="1">
-			<thead>
-				<tr>
-					<th>No</th>
-					<th>Data</th>
-					<th>Bobot 0</th>
-					<th>Bobot 1</th>
-					<th>Minimum</th>
-					<th>Outcome</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-				for ($a = 0; $a < count($normalizedDataTes); $a++) {
-					$sum = array_fill(0, count($initialWeights), 0); // Reset variabel sum
-					$baris1 = 1;
-
-					for ($x = 0; $x < count($initialWeights); $x++) {
-						for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
-							$pangkat[$x][$y] = ($normalizedDataTes[$a][$y] - $initialWeights[$x][$y]) * ($normalizedDataTes[$a][$y] - $initialWeights[$x][$y]);
-						}
-
-						for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
-							$sum[$x] += $pangkat[$x][$y]; // Perbaiki penjumlahan nilai sum
-						}
-
-						$sqrt[$x] = sqrt($sum[$x]);
-
-						// Pencetakan nilai untuk debugging
-					}
-
-					// Pembaruan bobot dilakukan setelah perhitungan Euclidean Distance
-					$idxMin = array_search(min($sqrt), $sqrt);
-					for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
-						$updateWeight = $initialWeights[$idxMin][$y] + ($alpha * ($normalizedDataTes[$a][$y] - $initialWeights[$idxMin][$y]));
-						$initialWeights[$idxMin][$y] = $updateWeight;
-					}
-
-					// Tampilkan hasil pada baris tabel
-				?>
-					<tr align="center">
-						<td><?= $a + 1 ?></td>
-						<td>
-							<?php
-							$formattedValues = array_map(function ($value) {
-								return number_format($value, 2);
-							}, $normalizedDataTes[$a]);
-							echo implode(', ', $formattedValues);
-							?>
-						</td>
-						<td><?= number_format($sqrt[0], 2) ?></td>
-						<td><?= number_format($sqrt[1], 2) ?></td>
-						<td><?= number_format(min($sqrt), 2) ?></td>
-						<td><?= $idxMin ?></td>
+		<section id="hasil-uji">
+			<table border="1">
+				<thead>
+					<tr BGCOLOR="gray">
+						<th>No</th>
+						<th>Data</th>
+						<th>Bobot 0</th>
+						<th>Bobot 1</th>
+						<th>Minimum</th>
+						<th>Outcome</th>
 					</tr>
-				<?php
-				}
+				</thead>
+				<tbody>
+					<?php
+					echo "Hasil Uji:";
+					for ($a = 0; $a < count($normalizedDataTes); $a++) {
+						$sum = array_fill(0, count($initialWeights), 0); // Reset variabel sum
+						$baris1 = 1;
 
+						for ($x = 0; $x < count($initialWeights); $x++) {
+							for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
+								$pangkat[$x][$y] = ($normalizedDataTes[$a][$y] - $initialWeights[$x][$y]) * ($normalizedDataTes[$a][$y] - $initialWeights[$x][$y]);
+							}
 
-				// }
-				?>
-			</tbody>
-		</table>
+							for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
+								$sum[$x] += $pangkat[$x][$y]; // Perbaiki penjumlahan nilai sum
+							}
+
+							$sqrt[$x] = sqrt($sum[$x]);
+
+							// Pencetakan nilai untuk debugging
+						}
+
+						// Pembaruan bobot dilakukan setelah perhitungan Euclidean Distance
+						$idxMin = array_search(min($sqrt), $sqrt);
+						for ($y = 0; $y < count($normalizedDataTes[$a]); $y++) {
+							$updateWeight = $initialWeights[$idxMin][$y] + ($alpha * ($normalizedDataTes[$a][$y] - $initialWeights[$idxMin][$y]));
+							$initialWeights[$idxMin][$y] = $updateWeight;
+						}
+
+						// Tampilkan hasil pada baris tabel					
+					?>
+						<tr align="center">
+							<td><?= $a + 1 ?></td>
+							<td>
+								<?php
+								$formattedValues = array_map(function ($value) {
+									return number_format($value, 2);
+								}, $normalizedDataTes[$a]);
+								echo implode(', ', $formattedValues);
+								?>
+							</td>
+							<td><?= number_format($sqrt[0], 2) ?></td>
+							<td><?= number_format($sqrt[1], 2) ?></td>
+							<td><?= number_format(min($sqrt), 2) ?></td>
+							<td><?= $idxMin ?></td>
+						</tr>
+					<?php
+					}
+					// }
+					?>
+				</tbody>
+			</table>
+		</section>
 	</center>
 </body>
 
